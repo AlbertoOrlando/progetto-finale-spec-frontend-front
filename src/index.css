@@ -1,0 +1,77 @@
+/* card devices list */
+
+.devices-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.devices-list li {
+    background: #f5f5f7;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.2s, transform 0.2s;
+    padding: 1.2rem 1rem;
+}
+
+.devices-list li:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.13);
+    transform: translateY(-3px) scale(1.02);
+}
+
+.devices-list a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.devices-list p {
+    margin: 0.4rem 0;
+    font-size: 1.08rem;
+    color: #222;
+}
+
+.titolo_device_list {
+    text-align: center;
+}
+
+/* navbar app.jsx */
+nav {
+    padding: 1rem 0rem;
+    margin-bottom: 2rem;
+}
+
+nav a {
+    color: black;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: #f5f5f7;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* filtri devices list */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
