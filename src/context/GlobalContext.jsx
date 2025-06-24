@@ -1,18 +1,29 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 const { VITE_API_URL } = import.meta.env;
 
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
-    const [detailedProduct, setDetailedProduct] = useState(null);
+
+    const [search, setSearch] = useState("");
+
+
+    const [compareList, setCompareList] = useState(() => {
+        const saved = localStorage.getItem("compareList");
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem("compareList", JSON.stringify(compareList));
+    }, [compareList]);
 
     useEffect(() => {
         const fetchAllProducts = async () => {
             try {
                 const response = await fetch(`${VITE_API_URL}`);
                 if (!response.ok) {
-                    throw new Error('Errore nella risposta della fetch');
+                    throw new Error('Errore nella risposta della fetch' + response.status);
                 }
                 const data = await response.json();
                 setProducts(data);
@@ -24,30 +35,31 @@ export const GlobalProvider = ({ children }) => {
         fetchAllProducts();
     }, []);
 
-    const fetchProductById = async (id) => {
-        setDetailedProduct(null);
-        try {
-            const res = await fetch(`${VITE_API_URL}/${id}`);
-            if (!res.ok) throw new Error("Errore nella fetch del dettaglio");
-            const data = await res.json();
-            setDetailedProduct(data);
-
-            setProducts(prev =>
-                prev.map(p => p.id == id ? { ...p, ...data } : p))
-                ;
-        } catch (error) {
-            console.error(error);
-            setDetailedProduct(null);
-        }
+    const toggleCompare = (product) => {
+        setCompareList(prev =>
+            prev.some(p => p.id === product.id)
+                ? prev.filter(p => p.id !== product.id)
+                : [...prev, product]
+        );
     };
+
 
     return (
         <GlobalContext.Provider value={{
             products,
-            detailedProduct,
-            fetchProductById,
+            search, setSearch,
+            compareList,
+            toggleCompare,
         }}>
             {children}
         </GlobalContext.Provider>
     );
 };
+
+export function useGlobalContext() {
+    const context = useContext(GlobalContext);
+    if (!context) {
+        throw new Error("useGlobalContext must be used within a GlobalProvider");
+    }
+    return context;
+}

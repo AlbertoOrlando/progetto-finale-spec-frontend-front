@@ -1,83 +1,100 @@
-import { useContext, useState, useMemo } from "react";
-import { GlobalContext } from "../context/GlobalContext";
+import { useState } from "react";
+import { useGlobalContext } from "../context/GlobalContext";
 
-export default function DevicesList() {
-    const { products } = useContext(GlobalContext);
 
-    // Stati per ricerca, filtro e ordinamento
-    const [search, setSearch] = useState("");
+function DevicesList() {
+    const {
+        products,
+        search, setSearch,
+        compareList, toggleCompare,
+    } = useGlobalContext();
+
     const [category, setCategory] = useState("all");
     const [sortBy, setSortBy] = useState("title");
     const [sortOrder, setSortOrder] = useState("asc");
 
-    // Ricava tutte le categorie disponibili
-    const categories = useMemo(() => {
-        const cats = products.map(p => p.category);
-        return ["all", ...Array.from(new Set(cats))];
-    }, [products]);
 
-    // Filtra, cerca e ordina i prodotti
-    const filteredProducts = useMemo(() => {
-        let filtered = products;
+    const categories = ["all", ...Array.from(new Set(
+        products
+            .map(p => p.category)
+            .filter(cat => typeof cat === "string" && cat.trim() !== "")
+    ))];
 
-        // Filtro per categoria
-        if (category !== "all") {
-            filtered = filtered.filter(p => p.category === category);
-        }
 
-        // Ricerca per titolo
-        if (search.trim() !== "") {
-            filtered = filtered.filter(p =>
-                p.title.toLowerCase().includes(search.toLowerCase())
-            );
-        }
-
-        // Ordinamento
-        filtered = filtered.slice().sort((a, b) => {
-            const aValue = a[sortBy].toLowerCase();
-            const bValue = b[sortBy].toLowerCase();
-            if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-            if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-            return 0;
-        });
-
-        return filtered;
-    }, [products, search, category, sortBy, sortOrder]);
+    let filteredProducts = products;
+    if (category !== "all") {
+        filteredProducts = filteredProducts.filter(p => p.category === category);
+    }
+    if (search.trim() !== "") {
+        filteredProducts = filteredProducts.filter(p =>
+            (p.title || "").toLowerCase().includes(search.toLowerCase())
+        );
+    }
+    filteredProducts = filteredProducts.slice().sort((a, b) => {
+        const aValue = (a[sortBy] || "").toLowerCase();
+        const bValue = (b[sortBy] || "").toLowerCase();
+        if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+    });
 
     return (
         <div>
             <h1>Lista Prodotti</h1>
             <div className="filters">
+
                 <input
                     type="text"
                     placeholder="Cerca per titolo..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                 />
+
                 <select value={category} onChange={e => setCategory(e.target.value)}>
-                    {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat === "all" ? "Tutte le categorie" : cat}</option>
+                    {categories.map((cat, index) => (
+                        <option key={index} value={cat}>{cat === "all" ? "Tutte le categorie" : cat}</option>
                     ))}
                 </select>
+
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
                     <option value="title">Ordina per titolo</option>
                     <option value="category">Ordina per categoria</option>
                 </select>
+
                 <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
                     <option value="asc">A-Z</option>
                     <option value="desc">Z-A</option>
                 </select>
+
             </div>
+
             <ul className="devices-list">
                 {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product) => (
-                        <li key={product.id}>
-                            <a href={`/${product.id}`}>
-                                <p>Prodotto: {product.title}</p>
-                                <p>Categoria: {product.category}</p>
-                            </a>
-                        </li>
-                    ))
+                    filteredProducts
+                        .filter(product =>
+                            typeof product.title === "string" && product.title.trim() !== "" &&
+                            typeof product.category === "string" && product.category.trim() !== ""
+                        )
+                        .map(product => (
+                            <li key={product.id}>
+                                <button
+                                    onClick={() => toggleCompare(product)}
+                                    style={{
+                                        background: compareList.some(p => p.id === product.id) ? "#ffd700" : "#eee",
+                                        marginBottom: "0.5rem",
+                                        marginRight: "0.5rem"
+                                    }}
+                                >
+                                    {compareList.some(p => p.id === product.id)
+                                        ? "Rimuovi dalla comparazione"
+                                        : "Aggiungi a comparazione"}
+                                </button>
+                                <a href={`/${product.id}`}>
+                                    <p>Prodotto: {product.title}</p>
+                                    <p>Categoria: {product.category}</p>
+                                </a>
+                            </li>
+                        ))
                 ) : (
                     <li>Nessun prodotto disponibile</li>
                 )}
@@ -85,3 +102,5 @@ export default function DevicesList() {
         </div>
     );
 }
+
+export default DevicesList;

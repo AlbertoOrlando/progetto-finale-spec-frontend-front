@@ -1,40 +1,55 @@
-import { useParams, Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
-import { GlobalContext } from "../context/GlobalContext";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useGlobalContext } from "../context/GlobalContext";
+const { VITE_API_URL } = import.meta.env;
+
 
 export default function Device() {
     const { id } = useParams();
-    const { detailedProduct, fetchProductById } = useContext(GlobalContext);
+    const { compareList, toggleCompare } = useGlobalContext();
+    const [detailedProduct, setDetailedProduct] = useState(null);
+
+    const fetchProductById = async (id) => {
+        try {
+            const res = await fetch(`${VITE_API_URL}/${id}`);
+            if (!res.ok) throw new Error("Errore nella fetch del dettaglio" + res.status);
+            const data = await res.json();
+            setDetailedProduct(data);
+
+        } catch (error) {
+            console.error('Errore durante il fetch del prodotto:', error);
+        }
+    };
+
 
     useEffect(() => {
         fetchProductById(id);
     }, [id]);
 
-    console.log("detailedProduct", detailedProduct);
+    const product = detailedProduct.product;
 
 
-    if (!detailedProduct) {
-        return <div>Caricamento...</div>;
-    }
-
-    const {
-        title,
-        category,
-        description,
-        price,
-        color,
-        storage
-    } = detailedProduct.product;
 
     return (
         <div>
-            <h2>{title}</h2>
-            <p><strong>Categoria:</strong> {category}</p>
-            <p><strong>Descrizione:</strong> {description || "Non disponibile"}</p>
-            <p><strong>Prezzo:</strong> {price ? `€${price}` : "Non disponibile"}</p>
-            <p><strong>Colore:</strong> {color || "Non disponibile"}</p>
-            <p><strong>Memoria:</strong> {storage || "Non disponibile"}</p>
-            <Link to="/">← Torna alla lista</Link>
+            <button
+                onClick={() => toggleCompare(product)}
+                style={{
+                    background: compareList.some(p => p.id === product.id) ? "#ffd700" : "#eee",
+                    marginBottom: "1rem",
+                    marginRight: "0.5rem"
+                }}
+            >
+                {compareList.some(p => p.id === product.id)
+                    ? "Rimuovi dalla comparazione"
+                    : "Aggiungi a comparazione"}
+            </button>
+            <h2>{product?.title}</h2>
+            <p><strong>Categoria:</strong> {product?.category}</p>
+            <p><strong>Descrizione:</strong> {product?.description || "Non disponibile"}</p>
+            <p><strong>Prezzo:</strong> {product?.price ? `€${product.price}` : "Non disponibile"}</p>
+            <p><strong>Colore:</strong> {product?.color || "Non disponibile"}</p>
+            <p><strong>Memoria:</strong> {product?.storage || "Non disponibile"}</p>
         </div>
     );
 }
