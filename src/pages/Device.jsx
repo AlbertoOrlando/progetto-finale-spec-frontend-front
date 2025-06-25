@@ -26,7 +26,7 @@ export default function Device() {
         fetchProductById(id);
     }, [id]);
 
-    const product = detailedProduct.product;
+    const product = detailedProduct?.product;
 
 
 
