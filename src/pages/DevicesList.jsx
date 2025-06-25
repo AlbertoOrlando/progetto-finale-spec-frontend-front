@@ -78,14 +78,13 @@ function DevicesList() {
                         .map(product => (
                             <li key={product.id}>
                                 <button
-                                    onClick={() => toggleCompare(product)}
-                                    style={{
-                                        background: compareList.some(p => p.id === product.id) ? "#ffd700" : "#eee",
-                                        marginBottom: "0.5rem",
-                                        marginRight: "0.5rem"
-                                    }}
+                                    className={
+                                        "toggle-compare-btn" +
+                                        (compareList.includes(product.id) ? " remove" : "")
+                                    }
+                                    onClick={() => toggleCompare(product.id)}
                                 >
-                                    {compareList.some(p => p.id === product.id)
+                                    {compareList.includes(product.id)
                                         ? "Rimuovi dalla comparazione"
                                         : "Aggiungi a comparazione"}
                                 </button>

@@ -28,28 +28,30 @@ export default function Device() {
 
     const product = detailedProduct?.product;
 
-
+    if (!product) {
+        return <div>Caricamento...</div>;
+    }
 
     return (
         <div>
+            <h1>Dettaglio Prodotto</h1>
             <button
-                onClick={() => toggleCompare(product)}
-                style={{
-                    background: compareList.some(p => p.id === product.id) ? "#ffd700" : "#eee",
-                    marginBottom: "1rem",
-                    marginRight: "0.5rem"
-                }}
+                className={
+                    "toggle-compare-btn" +
+                    (compareList.includes(product.id) ? " remove" : "")
+                }
+                onClick={() => toggleCompare(product.id)}
             >
-                {compareList.some(p => p.id === product.id)
+                {compareList.includes(product.id)
                     ? "Rimuovi dalla comparazione"
                     : "Aggiungi a comparazione"}
             </button>
-            <h2>{product?.title}</h2>
-            <p><strong>Categoria:</strong> {product?.category}</p>
-            <p><strong>Descrizione:</strong> {product?.description || "Non disponibile"}</p>
-            <p><strong>Prezzo:</strong> {product?.price ? `€${product.price}` : "Non disponibile"}</p>
-            <p><strong>Colore:</strong> {product?.color || "Non disponibile"}</p>
-            <p><strong>Memoria:</strong> {product?.storage || "Non disponibile"}</p>
+            <h2>{product.title}</h2>
+            <p><strong>Categoria:</strong> {product.category}</p>
+            <p><strong>Descrizione:</strong> {product.description || "Non disponibile"}</p>
+            <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "Non disponibile"}</p>
+            <p><strong>Colore:</strong> {product.color || "Non disponibile"}</p>
+            <p><strong>Memoria:</strong> {product.storage || "Non disponibile"}</p>
         </div>
     );
 }
