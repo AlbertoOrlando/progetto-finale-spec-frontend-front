@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 
 
@@ -7,7 +7,13 @@ function DevicesList() {
         products,
         search, setSearch,
         compareList, toggleCompare,
+        toggleFavorite,
+        favorites,
+        debounce
     } = useGlobalContext();
+
+    const [inputValue, setInputValue] = useState("");
+    const debouncedSetSearch = useRef(debounce(setSearch, 500)).current;
 
     const [category, setCategory] = useState("all");
     const [sortBy, setSortBy] = useState("title");
@@ -25,7 +31,7 @@ function DevicesList() {
     if (category !== "all") {
         filteredProducts = filteredProducts.filter(p => p.category === category);
     }
-    if (search.trim() !== "") {
+    if ((search || "").trim() !== "") {
         filteredProducts = filteredProducts.filter(p =>
             (p.title || "").toLowerCase().includes(search.toLowerCase())
         );
@@ -46,8 +52,11 @@ function DevicesList() {
                 <input
                     type="text"
                     placeholder="Cerca per titolo..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
+                    value={inputValue}
+                    onChange={e => {
+                        setInputValue(e.target.value);         // aggiorna subito l’input
+                        debouncedSetSearch(e.target.value);    // debounce la ricerca
+                    }}
                 />
 
                 <select value={category} onChange={e => setCategory(e.target.value)}>
@@ -87,6 +96,17 @@ function DevicesList() {
                                     {compareList.includes(product.id)
                                         ? "Rimuovi dalla comparazione"
                                         : "Aggiungi a comparazione"}
+                                </button>
+                                <button
+                                    className={
+                                        "toggle-favorite-btn" +
+                                        (favorites.includes(product.id) ? " remove" : "")
+                                    }
+                                    onClick={() => toggleFavorite(product.id)}
+                                >
+                                    {favorites.includes(product.id)
+                                        ? "Rimuovi dai preferiti"
+                                        : "Aggiungi ai preferiti"}
                                 </button>
                                 <a href={`/${product.id}`}>
                                     <p>Prodotto: {product.title}</p>

@@ -1,18 +1,30 @@
-import { useContext } from "react";
-import { GlobalContext } from "../context/GlobalContext";
+import { useGlobalContext } from "../context/GlobalContext";
+
 
 export default function Favorites() {
+    const { toggleCompare, favorites, toggleFavorite, products } = useGlobalContext();
 
     return (
         <div>
-            <h1>Preferenze</h1>
-            <p>Questa pagina è ancora in fase di sviluppo.</p>
-            <p>Per ora, puoi solo modificare le preferenze di visualizzazione dei prodotti.</p>
-            <p>Le preferenze attuali sono:</p>
-            <ul>
-                <li>Visualizza prodotti in ordine alfabetico</li>
-                <li>Mostra solo prodotti disponibili</li>
-            </ul>
+            <h1>Preferiti</h1>
+            {favorites.length === 0 ? (
+                <div>Nessun prodotto tra i preferiti.</div>
+            ) : (
+                <ul>
+                    {favorites.map(id => {
+                        const product = products.find(p => p.id === id);
+                        if (!product) return null;
+                        return (
+                            <li key={id}>
+                                <h2>{product.title}</h2>
+                                <p>Categoria: {product.category}</p>
+                                <button onClick={() => toggleCompare(id)}>Confronta</button>
+                                <button onClick={() => toggleFavorite(id)}>Rimuovi dai preferiti</button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
         </div>
     );
 }

@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 
 
 export default function Compare() {
-    const { products, compareList, toggleCompare, compareDetails } = useGlobalContext();
+    const { products, compareList, toggleCompare, compareDetails, debounce } = useGlobalContext();
+
+    const [inputValue, setInputValue] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
 
+    const debouncedSetSearchTerm = useRef(
+        debounce((val) => {
+            setSearchTerm(val);
+            setShowDropdown(val.length > 0);
+        }, 500)
+    ).current;
 
 
     const availableProducts = products.filter(
@@ -33,12 +41,12 @@ export default function Compare() {
                 <input
                     type="text"
                     placeholder="Cerca prodotto da aggiungere..."
-                    value={searchTerm}
+                    value={inputValue}
                     onChange={e => {
-                        setSearchTerm(e.target.value);
-                        setShowDropdown(e.target.value.length > 0);
+                        setInputValue(e.target.value);
+                        debouncedSetSearchTerm(e.target.value);
                     }}
-                    onFocus={() => setShowDropdown(searchTerm.length > 0)}
+                    onFocus={() => setShowDropdown(inputValue.length > 0)}
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     className="compare-search-input"
                 />
@@ -50,6 +58,7 @@ export default function Compare() {
                                 className="compare-dropdown-item"
                                 onMouseDown={() => {
                                     toggleCompare(product.id);
+                                    setInputValue("");
                                     setSearchTerm("");
                                     setShowDropdown(false);
                                 }}

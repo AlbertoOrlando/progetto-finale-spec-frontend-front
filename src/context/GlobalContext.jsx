@@ -16,6 +16,13 @@ export const GlobalProvider = ({ children }) => {
 
     const [compareDetails, setCompareDetails] = useState({});
 
+    // preferiti
+    const [favorites, setFavorites] = useState(() => {
+        const saved = localStorage.getItem("favorites");
+        return saved ? JSON.parse(saved) : [];
+    });
+
+
     useEffect(() => {
         localStorage.setItem("compareList", JSON.stringify(compareList));
     }, [compareList]);
@@ -64,6 +71,25 @@ export const GlobalProvider = ({ children }) => {
         );
     };
 
+    // preferiti
+    const toggleFavorite = (id) => {
+        setFavorites(prev =>
+            prev.includes(id)
+                ? prev.filter(x => x !== id)
+                : [...prev, id]
+        );
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    };
+
+    function debounce(fn, delay) {
+        let timer = null;
+        return (...args) => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                fn(...args);
+            }, delay);
+        };
+    }
 
     return (
         <GlobalContext.Provider value={{
@@ -72,6 +98,9 @@ export const GlobalProvider = ({ children }) => {
             compareList,
             toggleCompare,
             compareDetails,
+            favorites,
+            toggleFavorite,
+            debounce
         }}>
             {children}
         </GlobalContext.Provider>
