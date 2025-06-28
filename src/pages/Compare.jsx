@@ -1,5 +1,7 @@
 import { useState, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function Compare() {
@@ -80,23 +82,28 @@ export default function Compare() {
                     if (!product) return <div key={id}>Caricamento...</div>;
                     return (
                         <div key={id} className="compare-card">
-                            <button
-                                className={
-                                    "toggle-compare-btn" +
-                                    (compareList.includes(product.id) ? " remove" : "")
-                                }
-                                onClick={() => toggleCompare(product.id)}
-                            >
-                                {compareList.includes(product.id)
-                                    ? "Rimuovi dalla comparazione"
-                                    : "Aggiungi a comparazione"}
-                            </button>
                             <h3>{product.title}</h3>
                             <p><strong>Categoria:</strong> {product.category}</p>
                             <p><strong>Descrizione:</strong> {product.description || "—"}</p>
                             <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "—"}</p>
                             <p><strong>Colore:</strong> {product.color || "—"}</p>
                             <p><strong>Memoria:</strong> {product.storage || "—"}</p>
+                            <button
+                                className={
+                                    "toggle-compare-btn" +
+                                    (compareList.includes(product.id) ? " remove" : "")
+                                }
+                                onClick={() => toggleCompare(product.id)}
+                                title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faBalanceScale}
+                                    style={{
+                                        color: compareList.includes(product.id) ? "green" : "grey",
+                                        fontSize: "1.2rem"
+                                    }}
+                                />
+                            </button>
                         </div>
                     );
                 })}

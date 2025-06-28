@@ -1,5 +1,8 @@
 import { useState, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 function DevicesList() {
@@ -87,8 +90,8 @@ function DevicesList() {
                         .map(product => (
                             <li key={product.id}>
                                 <a href={`/device/${product.id}`}>
-                                    <p>Prodotto: {product.title}</p>
-                                    <p>Categoria: {product.category}</p>
+                                    <p><strong>Prodotto:</strong> {product.title}</p>
+                                    <p><strong>Categoria:</strong> {product.category}</p>
                                 </a>
                                 <button
                                     className={
@@ -96,10 +99,15 @@ function DevicesList() {
                                         (compareList.includes(product.id) ? " remove" : "")
                                     }
                                     onClick={() => toggleCompare(product.id)}
+                                    title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
                                 >
-                                    {compareList.includes(product.id)
-                                        ? "Rimuovi dalla comparazione"
-                                        : "Aggiungi a comparazione"}
+                                    <FontAwesomeIcon
+                                        icon={faBalanceScale}
+                                        style={{
+                                            color: compareList.includes(product.id) ? "green" : "grey",
+                                            fontSize: "1.2rem"
+                                        }}
+                                    />
                                 </button>
                                 <button
                                     className={
@@ -107,10 +115,15 @@ function DevicesList() {
                                         (favorites.includes(product.id) ? " remove" : "")
                                     }
                                     onClick={() => toggleFavorite(product.id)}
+                                    title={favorites.includes(product.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
                                 >
-                                    {favorites.includes(product.id)
-                                        ? "Rimuovi dai preferiti"
-                                        : "Aggiungi ai preferiti"}
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        style={{
+                                            color: favorites.includes(product.id) ? "red" : "grey",
+                                            fontSize: "1.2rem"
+                                        }}
+                                    />
                                 </button>
                             </li>
                         ))

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGlobalContext } from "../context/GlobalContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
 const { VITE_API_URL } = import.meta.env;
 
 
@@ -35,23 +37,28 @@ export default function Device() {
     return (
         <div>
             <h1>Dettaglio Prodotto</h1>
-            <button
-                className={
-                    "toggle-compare-btn" +
-                    (compareList.includes(product.id) ? " remove" : "")
-                }
-                onClick={() => toggleCompare(product.id)}
-            >
-                {compareList.includes(product.id)
-                    ? "Rimuovi dalla comparazione"
-                    : "Aggiungi a comparazione"}
-            </button>
             <h2>{product.title}</h2>
             <p><strong>Categoria:</strong> {product.category}</p>
             <p><strong>Descrizione:</strong> {product.description || "Non disponibile"}</p>
             <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "Non disponibile"}</p>
             <p><strong>Colore:</strong> {product.color || "Non disponibile"}</p>
             <p><strong>Memoria:</strong> {product.storage || "Non disponibile"}</p>
+            <button
+                className={
+                    "toggle-compare-btn" +
+                    (compareList.includes(product.id) ? " remove" : "")
+                }
+                onClick={() => toggleCompare(product.id)}
+                title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
+            >
+                <FontAwesomeIcon
+                    icon={faBalanceScale}
+                    style={{
+                        color: compareList.includes(product.id) ? "green" : "#888",
+                        fontSize: "1.2rem"
+                    }}
+                />
+            </button>
         </div>
     );
 }

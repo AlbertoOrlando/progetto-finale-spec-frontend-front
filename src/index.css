@@ -39,26 +39,16 @@
 }
 
 .toggle-compare-btn {
-    background: #ffd700;
     border: none;
-    border-radius: 4px;
-    padding: 0.3rem 0.7rem;
-    margin-bottom: 0.5rem;
-    margin-right: 0.5rem;
-    cursor: pointer;
-    font-weight: bold;
-    color: #222;
-    transition: background 0.2s, color 0.2s;
 }
 
-.toggle-compare-btn.remove {
-    background: #e74c3c;
-    color: #fff;
+.toggle-favorite-btn {
+    border: none;
 }
 
-.toggle-compare-btn:hover {
-    filter: brightness(0.95);
-}
+
+
+
 
 /* navbar app.jsx */
 nav {
@@ -76,8 +66,6 @@ nav a {
     letter-spacing: 0.5px;
     transition: color 0.2s;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
-    background-color: #f5f5f7;
 }
 
 nav a:hover {
