@@ -86,6 +86,10 @@ function DevicesList() {
                         )
                         .map(product => (
                             <li key={product.id}>
+                                <a href={`/device/${product.id}`}>
+                                    <p>Prodotto: {product.title}</p>
+                                    <p>Categoria: {product.category}</p>
+                                </a>
                                 <button
                                     className={
                                         "toggle-compare-btn" +
@@ -108,10 +112,6 @@ function DevicesList() {
                                         ? "Rimuovi dai preferiti"
                                         : "Aggiungi ai preferiti"}
                                 </button>
-                                <a href={`/${product.id}`}>
-                                    <p>Prodotto: {product.title}</p>
-                                    <p>Categoria: {product.category}</p>
-                                </a>
                             </li>
                         ))
                 ) : (

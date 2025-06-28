@@ -3,7 +3,8 @@ import Device from "./pages/Device"
 import DevicesList from "./pages/DevicesList"
 import { GlobalProvider } from "./context/GlobalContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
+import { faApple } from "@fortawesome/free-brands-svg-icons";
+import { faBalanceScale, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Compare from "./pages/Compare";
 import Favorites from "./pages/Favorites";
 
@@ -15,7 +16,7 @@ function App() {
         <nav>
           <div>
             <NavLink to="/">
-              Lista prodotti
+              <FontAwesomeIcon icon={faApple} />
             </NavLink>
           </div>
           <div>
@@ -23,15 +24,16 @@ function App() {
               <FontAwesomeIcon icon={faBalanceScale} />
             </NavLink>
             <NavLink to="/favorites">
-              Preferiti
+              <FontAwesomeIcon icon={faHeart} />
             </NavLink>
           </div>
         </nav>
         <Routes>
           <Route path="/" element={<DevicesList />} />
-          <Route path="/:id" element={<Device />} />
+          <Route path="/device/:id" element={<Device />} />
           <Route path="/compare" element={<Compare />} />
-          <Route path="/Favorites" element={<Favorites />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="*" element={<h1>Pagina non trovata</h1>} />
         </Routes>
       </BrowserRouter>
     </GlobalProvider>
