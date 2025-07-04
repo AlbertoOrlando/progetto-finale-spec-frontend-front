@@ -2,10 +2,12 @@ import { useState, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function Compare() {
-    const { products, compareList, toggleCompare, compareDetails, debounce } = useGlobalContext();
+    const { products, compareList, toggleCompare, compareDetails, debounce, toggleFavorite,
+        favorites } = useGlobalContext();
 
     const [inputValue, setInputValue] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +39,7 @@ export default function Compare() {
 
     return (
         <div className="compare-container">
-            <h1>Prodotti Da Comparare</h1>
+            <h1 style={{ textAlign: "center", marginBottom: "1.5rem" }}>Prodotti Da Comparare</h1>
 
             <div className="compare-search-bar">
                 <input
@@ -88,22 +90,38 @@ export default function Compare() {
                             <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "—"}</p>
                             <p><strong>Colore:</strong> {product.color || "—"}</p>
                             <p><strong>Memoria:</strong> {product.storage || "—"}</p>
-                            <button
-                                className={
-                                    "toggle-compare-btn" +
-                                    (compareList.includes(product.id) ? " remove" : "")
-                                }
-                                onClick={() => toggleCompare(product.id)}
-                                title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faBalanceScale}
-                                    style={{
-                                        color: compareList.includes(product.id) ? "green" : "grey",
-                                        fontSize: "1.2rem"
-                                    }}
-                                />
-                            </button>
+                            <div>
+                                <button
+                                    className={
+                                        "toggle-compare-btn" +
+                                        (compareList.includes(product.id) ? " remove" : "")
+                                    }
+                                    onClick={() => toggleCompare(product.id)}
+                                    title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faBalanceScale}
+                                        style={{
+                                            color: compareList.includes(product.id) ? "green" : "grey",
+                                            fontSize: "1.2rem"
+                                        }}
+                                    />
+                                </button>
+                                <button
+                                    className={
+                                        "toggle-favorite-btn"
+                                    }
+                                    onClick={() => toggleFavorite(product.id)}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        style={{
+                                            color: favorites.includes(product.id) ? "red" : "grey",
+                                            fontSize: "1.2rem"
+                                        }}
+                                    />
+                                </button>
+                            </div>
                         </div>
                     );
                 })}

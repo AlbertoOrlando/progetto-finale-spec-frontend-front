@@ -5,27 +5,24 @@ export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
-
     const [search, setSearch] = useState("");
-
-
     const [compareList, setCompareList] = useState(() => {
         const saved = localStorage.getItem("compareList");
         return saved ? JSON.parse(saved) : [];
     });
-
     const [compareDetails, setCompareDetails] = useState({});
-
-    // preferiti
     const [favorites, setFavorites] = useState(() => {
         const saved = localStorage.getItem("favorites");
         return saved ? JSON.parse(saved) : [];
     });
 
-
     useEffect(() => {
         localStorage.setItem("compareList", JSON.stringify(compareList));
     }, [compareList]);
+
+    useEffect(() => {
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    }, [favorites]);
 
     useEffect(() => {
         const fetchAllProducts = async () => {
@@ -71,14 +68,12 @@ export const GlobalProvider = ({ children }) => {
         );
     };
 
-    // preferiti
     const toggleFavorite = (id) => {
         setFavorites(prev =>
             prev.includes(id)
                 ? prev.filter(x => x !== id)
                 : [...prev, id]
         );
-        localStorage.setItem("favorites", JSON.stringify(favorites));
     };
 
     function debounce(fn, delay) {

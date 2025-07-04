@@ -49,7 +49,7 @@ function DevicesList() {
 
     return (
         <div>
-            <h1>Lista Prodotti</h1>
+            <h1 style={{ textAlign: "center", marginBottom: "1.5rem" }}>Lista Prodotti</h1>
             <div className="filters">
 
                 <input
@@ -95,11 +95,9 @@ function DevicesList() {
                                 </a>
                                 <button
                                     className={
-                                        "toggle-compare-btn" +
-                                        (compareList.includes(product.id) ? " remove" : "")
+                                        "toggle-compare-btn"
                                     }
                                     onClick={() => toggleCompare(product.id)}
-                                    title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
                                 >
                                     <FontAwesomeIcon
                                         icon={faBalanceScale}
@@ -111,11 +109,9 @@ function DevicesList() {
                                 </button>
                                 <button
                                     className={
-                                        "toggle-favorite-btn" +
-                                        (favorites.includes(product.id) ? " remove" : "")
+                                        "toggle-favorite-btn"
                                     }
                                     onClick={() => toggleFavorite(product.id)}
-                                    title={favorites.includes(product.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}
                                 >
                                     <FontAwesomeIcon
                                         icon={faHeart}

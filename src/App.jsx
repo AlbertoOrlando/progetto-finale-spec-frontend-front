@@ -13,7 +13,7 @@ function App() {
   return (
     <GlobalProvider>
       <BrowserRouter>
-        <nav>
+        <nav className="navbar">
           <div>
             <NavLink to="/">
               <FontAwesomeIcon icon={faApple} />

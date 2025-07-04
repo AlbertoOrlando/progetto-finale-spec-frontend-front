@@ -36,29 +36,29 @@ export default function Device() {
 
     return (
         <div>
-            <h1>Dettaglio Prodotto</h1>
-            <h2>{product.title}</h2>
-            <p><strong>Categoria:</strong> {product.category}</p>
-            <p><strong>Descrizione:</strong> {product.description || "Non disponibile"}</p>
-            <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "Non disponibile"}</p>
-            <p><strong>Colore:</strong> {product.color || "Non disponibile"}</p>
-            <p><strong>Memoria:</strong> {product.storage || "Non disponibile"}</p>
-            <button
-                className={
-                    "toggle-compare-btn" +
-                    (compareList.includes(product.id) ? " remove" : "")
-                }
-                onClick={() => toggleCompare(product.id)}
-                title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
-            >
-                <FontAwesomeIcon
-                    icon={faBalanceScale}
-                    style={{
-                        color: compareList.includes(product.id) ? "green" : "#888",
-                        fontSize: "1.2rem"
-                    }}
-                />
-            </button>
+            <h1 className="device-title">Dettaglio Prodotto</h1>
+            <div className="device-detail">
+                <h2>{product.title}</h2>
+                <p><strong>Categoria:</strong> {product.category}</p>
+                <p><strong>Descrizione:</strong> {product.description || "Non disponibile"}</p>
+                <p><strong>Prezzo:</strong> {product.price ? `€${product.price}` : "Non disponibile"}</p>
+                <p><strong>Colore:</strong> {product.color || "Non disponibile"}</p>
+                <p><strong>Memoria:</strong> {product.storage || "Non disponibile"}</p>
+                <button
+                    className={
+                        "toggle-compare-btn"
+                    }
+                    onClick={() => toggleCompare(product.id)}
+                >
+                    <FontAwesomeIcon
+                        icon={faBalanceScale}
+                        style={{
+                            color: compareList.includes(product.id) ? "green" : "#888",
+                            fontSize: "1.2rem"
+                        }}
+                    />
+                </button>
+            </div>
         </div>
     );
 }
