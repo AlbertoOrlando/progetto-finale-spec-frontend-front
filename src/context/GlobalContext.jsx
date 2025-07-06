@@ -5,7 +5,6 @@ export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
-    const [search, setSearch] = useState("");
     const [compareList, setCompareList] = useState(() => {
         const saved = localStorage.getItem("compareList");
         return saved ? JSON.parse(saved) : [];
@@ -89,7 +88,6 @@ export const GlobalProvider = ({ children }) => {
     return (
         <GlobalContext.Provider value={{
             products,
-            search, setSearch,
             compareList,
             toggleCompare,
             compareDetails,

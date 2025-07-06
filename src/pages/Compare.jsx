@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
@@ -9,16 +9,16 @@ export default function Compare() {
     const { products, compareList, toggleCompare, compareDetails, debounce, toggleFavorite,
         favorites } = useGlobalContext();
 
-    const [inputValue, setInputValue] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
 
-    const debouncedSetSearchTerm = useRef(
+    const debouncedSetSearchTerm = useCallback(
         debounce((val) => {
             setSearchTerm(val);
             setShowDropdown(val.length > 0);
-        }, 500)
-    ).current;
+        }, 500),
+        []
+    );
 
 
     const availableProducts = products.filter(
@@ -45,12 +45,10 @@ export default function Compare() {
                 <input
                     type="text"
                     placeholder="Cerca prodotto da aggiungere..."
-                    value={inputValue}
                     onChange={e => {
-                        setInputValue(e.target.value);
                         debouncedSetSearchTerm(e.target.value);
                     }}
-                    onFocus={() => setShowDropdown(inputValue.length > 0)}
+                    onFocus={() => setShowDropdown(searchTerm.length > 0)}
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     className="compare-search-input"
                 />
@@ -62,7 +60,6 @@ export default function Compare() {
                                 className="compare-dropdown-item"
                                 onMouseDown={() => {
                                     toggleCompare(product.id);
-                                    setInputValue("");
                                     setSearchTerm("");
                                     setShowDropdown(false);
                                 }}
@@ -81,7 +78,7 @@ export default function Compare() {
             <div className="compare-list">
                 {compareList.map(id => {
                     const product = compareDetails[id];
-                    if (!product) return <div key={id}>Caricamento...</div>;
+                    if (!product) return <div key={id}>Prodotto non disponibile</div>;
                     return (
                         <div key={id} className="compare-card">
                             <h3>{product.title}</h3>
@@ -93,11 +90,9 @@ export default function Compare() {
                             <div>
                                 <button
                                     className={
-                                        "toggle-compare-btn" +
-                                        (compareList.includes(product.id) ? " remove" : "")
+                                        "toggle-compare-btn"
                                     }
                                     onClick={() => toggleCompare(product.id)}
-                                    title={compareList.includes(product.id) ? "Rimuovi dalla comparazione" : "Aggiungi a comparazione"}
                                 >
                                     <FontAwesomeIcon
                                         icon={faBalanceScale}

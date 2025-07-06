@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
@@ -8,15 +8,15 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 function DevicesList() {
     const {
         products,
-        search, setSearch,
         compareList, toggleCompare,
         toggleFavorite,
         favorites,
         debounce
     } = useGlobalContext();
 
-    const [inputValue, setInputValue] = useState("");
-    const debouncedSetSearch = useRef(debounce(setSearch, 500)).current;
+    const [search, setSearch] = useState("");
+
+    const debouncedSetSearch = useCallback(debounce(setSearch, 500), []);
 
     const [category, setCategory] = useState("all");
     const [sortBy, setSortBy] = useState("title");
@@ -55,10 +55,8 @@ function DevicesList() {
                 <input
                     type="text"
                     placeholder="Cerca per titolo..."
-                    value={inputValue}
                     onChange={e => {
-                        setInputValue(e.target.value);         // aggiorna subito l’input
-                        debouncedSetSearch(e.target.value);    // debounce la ricerca
+                        debouncedSetSearch(e.target.value);
                     }}
                 />
 

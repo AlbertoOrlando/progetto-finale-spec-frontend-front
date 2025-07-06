@@ -31,7 +31,7 @@ export default function Device() {
     const product = detailedProduct?.product;
 
     if (!product) {
-        return <div>Caricamento...</div>;
+        return <div>Dettagli non disponibili</div>;
     }
 
     return (
