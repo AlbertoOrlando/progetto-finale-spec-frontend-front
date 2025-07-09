@@ -16,46 +16,44 @@ function DevicesList() {
 
     const [search, setSearch] = useState("");
 
-    const debouncedSetSearch = useCallback(debounce(setSearch, 500), []);
+    const debouncedSetSearch = useCallback(debounce(setSearch, 500), []); // Creazione di una versione debouncata della funzione setSearch con delay di 500ms
 
     const [category, setCategory] = useState("all");
     const [sortBy, setSortBy] = useState("title");
     const [sortOrder, setSortOrder] = useState("asc");
 
     // Memorizza le categorie per evitare ricalcoli inutili
-    const categories = useMemo(() => {
-        return ["all", ...Array.from(new Set(
+    const categories = useMemo(() => { // Creazione di un memo per le categorie disponibili
+        return ["all", ...Array.from(new Set( // Ritorna un array che inizia con "all" e contiene tutte le categorie uniche
             products
                 .map(p => p.category)
-                .filter(cat => typeof cat === "string" && cat.trim() !== "")
+                .filter(cat => typeof cat === "string" && cat.trim() !== "") // Filtra solo le categorie che sono stringhe non vuote
         ))];
     }, [products]);
 
-    // Memorizza i prodotti filtrati e ordinati
+
     const filteredAndSortedProducts = useMemo(() => {
         let currentProducts = products;
 
-        // Filtra per categoria
-        if (category !== "all") {
-            currentProducts = currentProducts.filter(p => p.category === category);
+        if (category !== "all") { // Se la categoria selezionata non è "all"
+            currentProducts = currentProducts.filter(p => p.category === category); // Filtra i prodotti per categoria
         }
 
-        // Filtra per ricerca
-        if ((search || "").trim() !== "") {
-            currentProducts = currentProducts.filter(p =>
-                (p.title || "").toLowerCase().includes(search.toLowerCase())
+        if ((search || "").trim() !== "") { // Se c'è una stringa di ricerca non vuota
+            currentProducts = currentProducts.filter(p => // Filtra i prodotti che contengono la stringa di ricerca nel titolo
+                (p.title || "").toLowerCase().includes(search.toLowerCase()) // Confronto case-insensitive tra titolo del prodotto e ricerca
             );
         }
 
-        // Ordina i prodotti
-        return currentProducts.slice().sort((a, b) => {
-            const aValue = (a[sortBy] || "").toLowerCase();
-            const bValue = (b[sortBy] || "").toLowerCase();
+
+        return currentProducts.slice().sort((a, b) => { // Ritorna una copia ordinata dell'array
+            const aValue = (a[sortBy] || "").toLowerCase(); // Ottiene il valore del campo di ordinamento per il primo elemento, convertito in minuscolo
+            const bValue = (b[sortBy] || "").toLowerCase(); // Ottiene il valore del campo di ordinamento per il secondo elemento, convertito in minuscolo
             if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
             if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-            return 0;
+            return 0; // Se i valori sono uguali, mantiene l'ordine originale
         });
-    }, [products, category, search, sortBy, sortOrder]); // Dipendenze: quando una di queste cambia, ricalcola
+    }, [products, category, search, sortBy, sortOrder]);
 
 
     return (
@@ -72,32 +70,30 @@ function DevicesList() {
                 />
 
                 <select value={category} onChange={e => setCategory(e.target.value)}>
-                    {categories.map((cat, index) => (
-                        <option key={index} value={cat}>{cat === "all" ? "Tutte le categorie" : cat}</option>
+                    {categories.map((cat, index) => ( // Mappatura delle categorie per creare le opzioni
+                        <option key={index} value={cat}>{cat === "all" ? "Tutte le categorie" : cat}</option> // Opzione con testo condizionale
                     ))}
                 </select>
 
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                    <option value="title">Ordina per titolo</option>
-                    <option value="category">Ordina per categoria</option>
+                    <option value="title">Ordina per titolo</option> {/* Opzione per ordinare per titolo */}
+                    <option value="category">Ordina per categoria</option> {/* Opzione per ordinare per categoria */}
                 </select>
 
                 <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
-                    <option value="asc">A-Z</option>
-                    <option value="desc">Z-A</option>
+                    <option value="asc">A-Z</option> {/* Opzione per ordine crescente */}
+                    <option value="desc">Z-A</option> {/* Opzione per ordine decrescente */}
                 </select>
 
             </div>
 
             <ul className="devices-list">
-                {/* Usa filteredAndSortedProducts */}
+
                 {filteredAndSortedProducts.length > 0 ? (
                     filteredAndSortedProducts
                         .filter(product =>
-                            // Questo filtro finale è più un controllo di robustezza.
-                            // Potrebbe non essere strettamente necessario se i dati 'products' sono sempre puliti.
-                            typeof product.title === "string" && product.title.trim() !== "" &&
-                            typeof product.category === "string" && product.category.trim() !== ""
+                            typeof product.title === "string" && product.title.trim() !== "" && // Verifica che il titolo sia una stringa non vuota
+                            typeof product.category === "string" && product.category.trim() !== "" // Verifica che la categoria sia una stringa non vuota
                         )
                         .map(product => (
                             <li key={product.id}>
@@ -143,4 +139,4 @@ function DevicesList() {
     );
 }
 
-export default DevicesList;
+export default DevicesList; 
