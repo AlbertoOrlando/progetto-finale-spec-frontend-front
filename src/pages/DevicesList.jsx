@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBalanceScale } from "@fortawesome/free-solid-svg-icons";
@@ -22,30 +22,41 @@ function DevicesList() {
     const [sortBy, setSortBy] = useState("title");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    // Memorizza le categorie per evitare ricalcoli inutili
+    const categories = useMemo(() => {
+        return ["all", ...Array.from(new Set(
+            products
+                .map(p => p.category)
+                .filter(cat => typeof cat === "string" && cat.trim() !== "")
+        ))];
+    }, [products]);
 
-    const categories = ["all", ...Array.from(new Set(
-        products
-            .map(p => p.category)
-            .filter(cat => typeof cat === "string" && cat.trim() !== "")
-    ))];
+    // Memorizza i prodotti filtrati e ordinati
+    const filteredAndSortedProducts = useMemo(() => {
+        let currentProducts = products;
 
+        // Filtra per categoria
+        if (category !== "all") {
+            currentProducts = currentProducts.filter(p => p.category === category);
+        }
 
-    let filteredProducts = products;
-    if (category !== "all") {
-        filteredProducts = filteredProducts.filter(p => p.category === category);
-    }
-    if ((search || "").trim() !== "") {
-        filteredProducts = filteredProducts.filter(p =>
-            (p.title || "").toLowerCase().includes(search.toLowerCase())
-        );
-    }
-    filteredProducts = filteredProducts.slice().sort((a, b) => {
-        const aValue = (a[sortBy] || "").toLowerCase();
-        const bValue = (b[sortBy] || "").toLowerCase();
-        if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-        if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-    });
+        // Filtra per ricerca
+        if ((search || "").trim() !== "") {
+            currentProducts = currentProducts.filter(p =>
+                (p.title || "").toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        // Ordina i prodotti
+        return currentProducts.slice().sort((a, b) => {
+            const aValue = (a[sortBy] || "").toLowerCase();
+            const bValue = (b[sortBy] || "").toLowerCase();
+            if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+            if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [products, category, search, sortBy, sortOrder]); // Dipendenze: quando una di queste cambia, ricalcola
+
 
     return (
         <div>
@@ -79,9 +90,12 @@ function DevicesList() {
             </div>
 
             <ul className="devices-list">
-                {filteredProducts.length > 0 ? (
-                    filteredProducts
+                {/* Usa filteredAndSortedProducts */}
+                {filteredAndSortedProducts.length > 0 ? (
+                    filteredAndSortedProducts
                         .filter(product =>
+                            // Questo filtro finale è più un controllo di robustezza.
+                            // Potrebbe non essere strettamente necessario se i dati 'products' sono sempre puliti.
                             typeof product.title === "string" && product.title.trim() !== "" &&
                             typeof product.category === "string" && product.category.trim() !== ""
                         )
