@@ -23,12 +23,11 @@ export default function Device() {
         }
     };
 
-
     useEffect(() => {
         fetchProductById(id);
     }, [id]);
 
-    const product = detailedProduct?.product;
+    const product = detailedProduct?.product; // Estrae il prodotto dai dettagli usando optional chaining
 
     if (!product) {
         return <div>Dettagli non disponibili</div>;
@@ -61,4 +60,4 @@ export default function Device() {
             </div>
         </div>
     );
-}
+} 

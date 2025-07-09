@@ -6,30 +6,29 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function Compare() {
-    const { products, compareList, toggleCompare, compareDetails, debounce, toggleFavorite,
-        favorites } = useGlobalContext();
+    const { products, compareList, toggleCompare, compareDetails, debounce, toggleFavorite, favorites } = useGlobalContext();
 
     const [searchTerm, setSearchTerm] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
 
     const debouncedSetSearchTerm = useCallback(
-        debounce((val) => {
-            setSearchTerm(val);
-            setShowDropdown(val.length > 0);
+        debounce((val) => { // Applica il debounce alla funzione che riceve un valore
+            setSearchTerm(val); // Imposta il termine di ricerca con il valore ricevuto
+            setShowDropdown(val.length > 0); // Mostra il dropdown solo se il valore ha lunghezza maggiore di 0
         }, 500),
         []
     );
 
 
-    const availableProducts = products.filter(
-        p =>
-            !compareList.includes(p.id) &&
-            (p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                p.category?.toLowerCase().includes(searchTerm.toLowerCase()))
+    const availableProducts = products.filter( // Filtra i prodotti disponibili per l'aggiunta alla comparazione nella barra di ricerca
+        p => // Per ogni prodotto p
+            !compareList.includes(p.id) && // Controlla che il prodotto non sia già nella lista di confronto
+            (p.title?.toLowerCase().includes(searchTerm.toLowerCase()) || // E che il titolo contenga il termine di ricerca (case insensitive)
+                p.category?.toLowerCase().includes(searchTerm.toLowerCase())) // Oppure che la categoria contenga il termine di ricerca (case insensitive)
     );
 
 
-    let infoMessage = null;
+    let infoMessage = null; // Inizializza la variabile per il messaggio informativo come null
     if (compareList.length === 0) {
         infoMessage = <div className="compare-empty">Nessun prodotto da comparare.</div>;
     } else if (compareList.length === 1) {
@@ -48,17 +47,17 @@ export default function Compare() {
                     onChange={e => {
                         debouncedSetSearchTerm(e.target.value);
                     }}
-                    onFocus={() => setShowDropdown(searchTerm.length > 0)}
-                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                    className="compare-search-input"
+                    onFocus={() => setShowDropdown(searchTerm.length > 0)} // Al focus, mostra dropdown se c'è un termine di ricerca
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)} // Al blur, nasconde dropdown dopo 150ms
+                    className="compare-search-input" // Classe CSS per lo styling dell'input
                 />
-                {showDropdown && availableProducts.length > 0 && (
-                    <ul className="compare-dropdown">
+                {showDropdown && availableProducts.length > 0 && ( // Renderizza dropdown solo se showDropdown è true e ci sono prodotti disponibili
+                    <ul className="compare-dropdown"> {/* Lista dropdown con i prodotti trovati */}
                         {availableProducts.map(product => (
-                            <li
+                            <li // Elemento della lista
                                 key={product.id}
                                 className="compare-dropdown-item"
-                                onMouseDown={() => {
+                                onMouseDown={() => { // Gestore dell'evento mousedown (usato invece di click per evitare conflitti con onBlur)
                                     toggleCompare(product.id);
                                     setSearchTerm("");
                                     setShowDropdown(false);
@@ -77,7 +76,7 @@ export default function Compare() {
 
             <div className="compare-list">
                 {compareList.map(id => {
-                    const product = compareDetails[id];
+                    const product = compareDetails[id]; // Ottiene i dettagli del prodotto dall'ID
                     if (!product) return <div key={id}>Prodotto non disponibile</div>;
                     return (
                         <div key={id} className="compare-card">
@@ -123,4 +122,4 @@ export default function Compare() {
             </div>
         </div>
     );
-}
+} 
